@@ -3,20 +3,50 @@ import bs4
 import time
 import local as lcl
 
-# Функция проверки элемента, возвращает текст или "Отсутствует информация"
+
 def check(element, start_idx):
+    """
+    Checks for the presence of an element and returns its text from the specified index.
+
+    If the element is missing, returns the value from lcl.MISSING_INFORMATION.
+
+    Args:
+    element (bs4.element.Tag | None): HTML element to check.
+    start_idx (int): Index to start with.
+
+    Returns:
+    str: Element text or a message indicating missing information.
+    """
     return element.text[start_idx:] if element else f"{lcl.MISSING_INFORMATION}"
 
-# Получение последней страницы поиска
+
 def get_last_page(search_query):
+    """
+    Gets the number of the last page of search results.
+
+    Args:
+    search_query (str): Search query string.
+
+    Returns:
+    int: Number of the last page of search results.
+    """
     url = f'https://obuv-tut2000.ru/magazin/search?gr_smart_search=1&search_text={search_query}'
     response = requests.get(url)
     soup = bs4.BeautifulSoup(response.text, "lxml")
     last_page_tag = soup.find("li", class_="page-num page_last")
     return int(last_page_tag.text) if last_page_tag else 1
 
-# Генерирует URL товаров с учетом постраничной навигации
+
 def generate_product_urls(search_query):
+    """
+    Generates URLs of all products for a search query, taking into account pagination.
+
+    Args:
+    search_query (str): Search query string.
+
+    Yields:
+    str: Full URL of each found product.
+    """
     total_pages = get_last_page(search_query)
     for page in range(0, total_pages + 1):
         if page==0:
@@ -30,8 +60,16 @@ def generate_product_urls(search_query):
             href = item.find("a").get("href")
             yield "https://obuv-tut2000.ru" + href
 
-# Парсим данные каждого товара
 def parse_product(url):
+    """
+    Parses product data from its page.
+
+    Args:
+    url (str): URL of the product page.
+
+    Returns:
+    dict | None: A dictionary containing product information, or None if no data is available.
+    """
     response = requests.get(url)
     soup = bs4.BeautifulSoup(response.text, "lxml")
     data = soup.find("div", class_="card-page")
@@ -69,6 +107,13 @@ def parse_product(url):
 
 # Запись результатов в файл
 def save_results(products, filename="sorted_products.txt"):
+    """
+    Saves a list of products to a text file.
+
+    Args:
+    products (list): List of dictionaries with product information.
+    filename (str, optional): File name to save. Defaults to "sorted_products.txt".
+    """
     with open(filename, 'w', encoding='utf-8') as f:
         for product in products:
             f.write(f"{lcl.NAME}: {product['name']}\n")
