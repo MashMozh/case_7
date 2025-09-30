@@ -60,6 +60,7 @@ def generate_product_urls(search_query):
             href = item.find("a").get("href")
             yield "https://obuv-tut2000.ru" + href
 
+
 def parse_product(url):
     """
     Parses product data from its page.
@@ -88,7 +89,7 @@ def parse_product(url):
         season = check(data.find("div", class_="option-item sezon even"), 5)
         price_str = data.find("strong").text.strip()
 
-        # Конвертация цены в число price_
+        
         price_value = int(price_str) if price_str else 0
 
         return {
@@ -105,7 +106,7 @@ def parse_product(url):
     except AttributeError:
         return None
 
-# Запись результатов в файл
+
 def save_results(products, filename="sorted_products.txt"):
     """
     Saves a list of products to a text file.
@@ -127,7 +128,7 @@ def save_results(products, filename="sorted_products.txt"):
             f.write(f"{lcl.PRICE}: {product['price']} руб.\n")
             f.write("-"*40 + "\n")
 
-# Основной поток
+
 search_query = input(f"{lcl.ENTER_SEARCH_QUERY}:")
 products = []
 for url in generate_product_urls(search_query):
@@ -136,10 +137,10 @@ for url in generate_product_urls(search_query):
     if product_data:
         products.append(product_data)
 
-# Сортируем по цене
+
 products.sort(key=lambda x: x['price'])
 
-# Сохраняем результаты
+
 save_results(products)
 
 print(f"{lcl.PRODUCT_INFORMATION_IN_THE_FOLLOWING_FILE}:", "sorted_products.txt" )
