@@ -135,6 +135,8 @@ def save_results(products, filename="sorted_products.txt"):
 
 search_query = input(f"{lcl.ENTER_SEARCH_QUERY}:")
 products = []
+
+
 for url in generate_product_urls(search_query):
     time.sleep(3)
     product_data = parse_product(url)
