@@ -1,3 +1,7 @@
+# Part of a case-study #7
+# Developers: Lagoda K., Pinoeva K., Zheravina N., Mozhaitseva M.
+
+
 import requests
 import bs4
 import time
