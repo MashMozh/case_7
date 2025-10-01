@@ -41,7 +41,7 @@ def get_last_page(search_query):
     return int(last_page_tag.text) if last_page_tag else 1
 
 
-def generate_product_urls(search_query):
+def get_product_urls(search_query):
     """
     Generates URLs of all products for a search query, taking into account pagination.
 
@@ -65,7 +65,7 @@ def generate_product_urls(search_query):
             yield "https://obuv-tut2000.ru" + href
 
 
-def parse_product(url):
+def product_information(url):
     """
     Parses product data from its page.
 
@@ -136,10 +136,9 @@ def save_results(products, filename="sorted_products.txt"):
 search_query = input(f"{lcl.ENTER_SEARCH_QUERY}:")
 products = []
 
-
-for url in generate_product_urls(search_query):
+for url in get_product_urls(search_query):
     time.sleep(3)
-    product_data = parse_product(url)
+    product_data = product_information(url)
     if product_data:
         products.append(product_data)
 
